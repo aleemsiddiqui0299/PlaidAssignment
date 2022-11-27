@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Homepage{% endblock %}
+{% block body %} This is my Homepage 
+
+<button id="link-button">Link Account</button>
+<button id="account-button">See Accounts</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+<script type="text/javascript">
+    
+ const myHeaders = new Headers({
+      "Content-Type": "text/plain",
+    });
+
+    async function getAccounts(){
+       const fetchAccounts = async() =>{
+      const response = await fetch("/get_accounts",{
+        method : "POST",
+      });
+      console.log(response);
+      return response;
+    };
+
+    }
+
+
+  async function getLinkToken(){
+
+    const fetchLinkToken = async() =>{
+      const response = await fetch("/create_link_token",{
+        method :"POST",
+        credentials : "same-origin",
+        headers : myHeaders,
+      });
+
+      const responseJSON = await response.json();
+      console.log(responseJSON);
+      return responseJSON.link_token;
+    };
+    
+    const configs = {
+      token : await getLinkToken(),
+      onSuccess: async function (public_token, metadata){
+        await fetch("/exchange_public_token",{
+          public_token: public_token
+          });
+
+      console.log("PUBLIC TOKEN "+public_token);
+      console.log(metadata);
+    },
+      onExit: async function (err, metadata) {
+
+        console.log(err);
+        console.log(metadata);
+        if(err != null && err.error_code === "INVALID_LINK_TOKEN"){
+          linkHandler.destroy();
+          linkHandler = Plaid.create({
+            ...config,
+            token : await fetchLinkToken(),
+          });
+        }
+        if(err != null){
+          console.log("ERROR : " + str(err));
+        }
+      
+     },
+    };
+
+    var linkHandler = Plaid.create(configs);
+    linkHandler.open();
+  }
+  document.getElementById("link-button").onclick = function (){
+    linkTokenFunc();
+  };
+  document.getElementById("account-button").onclick = function(){
+    getAccounts();
+  }
+</script>
+{% endblock %}

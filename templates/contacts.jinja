@@ -1,0 +1,40 @@
+{% extends 'base.html' %} 
+{% block title %} Contacts {% endblock title %} 
+{% block body %}
+<div class = "container">
+   
+    <div class="card">
+  <div class="card-header">
+     <img src = "https://cdn.pixabay.com/photo/2018/01/14/23/12/nature-3082832__480.jpg" class="d-block w-25">   
+    Featured
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">Special title treatment</h5>
+    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+    <a href="#" class="btn btn-primary">Go somewhere</a>
+  </div>
+</div
+</div>
+
+<div class = "userdata">
+    <form class="row g-3" method = "POST">
+ {% csrf_token %}
+  <div class="col-md-6">
+    <label for="inputPassword4" class="form-label">Password</label>
+    <input type="password" class="form-control" id="inputPassword4" name = "inputPassword4">
+  </div>
+  <div class="col-12">
+    <label for="inputAddress" class="form-label">Address</label>
+    <input type="text" class="form-control" id="inputAddress" name = "inputAddress" placeholder="1234 Main St">
+  </div>
+  
+  <div class="col-md-6">
+    <label for="inputCity" class="form-label">City</label>
+    <input type="text" class="form-control" id="inputCity" name = "inputCity">
+  </div>
+  
+    <button type="submit" class="btn btn-primary">Submit</button>
+ 
+</form>
+</div>
+{% endblock body %}
